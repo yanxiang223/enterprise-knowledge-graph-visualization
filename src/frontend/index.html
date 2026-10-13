@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOT-LD 知识图谱可视化</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Cytoscape.js 从 OBS 加载（替代原始 unpkg.com CDN） -->
+    <script src="/lib/cytoscape.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- 左侧：输入面板 -->
+        <div id="input-panel">
+            <div class="panel-header">
+                <h2>DOT-LD 编辑器</h2>
+                <button id="parseBtn" class="primary-btn">解析 & 渲染</button>
+            </div>
+            <textarea id="editor" placeholder="在此输入 DOT-LD Markdown 内容...
+
+::config
+system: round-rectangle, #2196F3, 100
+database: rectangle, #4CAF50, 90
+component: ellipse, #FF9800, 80
+
+WebServer: type=system
+UserDatabase: type=database
+Cache: type=component
+::
+
+The [[WebServer]] handles requests.
+::rel WebServer -> UserDatabase [stores_data_in] ::"></textarea>
+            <div class="examples-bar">
+                <span>示例：</span>
+                <button class="example-btn" data-example="basic">基础示例</button>
+                <button class="example-btn" data-example="hvac">HVAC 系统</button>
+                <button class="example-btn" data-example="api">API 文档</button>
+            </div>
+        </div>
+
+        <!-- 右侧：图可视化面板 -->
+        <div id="graph-panel">
+            <div class="toolbar">
+                <input type="text" id="searchInput" placeholder="搜索节点..." class="toolbar-input" />
+                <select id="layoutSelect" class="toolbar-input">
+                    <option value="cose">力导向布局</option>
+                    <option value="breadthfirst">层次布局</option>
+                    <option value="circle">环形布局</option>
+                    <option value="grid">网格布局</option>
+                </select>
+                <button id="fitBtn" class="toolbar-btn">适应窗口</button>
+                <button id="exportBtn" class="toolbar-btn">导出 PNG</button>
+            </div>
+            <div id="cy"></div>
+            <div class="info-bar">
+                <span id="nodeCount">节点: 0</span>
+                <span id="edgeCount">边: 0</span>
+            </div>
+        </div>
+
+        <!-- 最右侧：分析面板 -->
+        <div id="analysis-panel">
+            <div class="panel-section">
+                <h3>节点详情</h3>
+                <div id="nodeDetails">
+                    <p class="hint">点击节点查看详情</p>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h3>路径查找</h3>
+                <input type="text" id="startNode" placeholder="起始节点..." class="panel-input" />
+                <input type="text" id="endNode" placeholder="目标节点..." class="panel-input" />
+                <button id="findPathBtn" class="panel-btn">查找路径</button>
+                <button id="clearPathBtn" class="panel-btn outline">清除路径</button>
+                <div id="pathResult"></div>
+            </div>
+
+            <div class="panel-section">
+                <h3>图分析</h3>
+                <div class="sub-section">
+                    <h4>社区检测</h4>
+                    <button id="clusterBtn" class="panel-btn">发现聚类</button>
+                    <button id="clearClusterBtn" class="panel-btn outline">清除聚类</button>
+                    <div id="clusterResult"></div>
+                </div>
+                <div class="sub-section">
+                    <h4>中心性分析</h4>
+                    <div class="btn-row">
+                        <button id="degreeBtn" class="panel-btn">度中心性</button>
+                        <button id="betweenBtn" class="panel-btn">介数</button>
+                        <button id="closeBtn" class="panel-btn">接近</button>
+                    </div>
+                    <button id="clearCentralBtn" class="panel-btn outline">清除</button>
+                    <div id="centralityResult"></div>
+                </div>
+                <div class="sub-section">
+                    <h4>链路预测</h4>
+                    <button id="linkPredictBtn" class="panel-btn">建议缺失连接</button>
+                    <div id="linkResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
